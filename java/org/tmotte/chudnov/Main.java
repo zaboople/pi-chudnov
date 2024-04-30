@@ -6,7 +6,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.math.BigDecimal;
 
 /**
- * Currently does 1,000,000 digits in about 9 seconds on my computer.
+ * Currently does 1,000,000 digits in about 6 seconds on my computer,
+ * running at depth 80,000 or so.
  * See Driver2.java for more info on calculation.
  */
 public class Main {

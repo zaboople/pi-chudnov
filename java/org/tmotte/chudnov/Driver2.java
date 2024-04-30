@@ -18,7 +18,7 @@ import java.math.RoundingMode;
     harder as you go up. The nastiest of all is the final calculation, and guess what?
 
     We have to find the square root of 10005 *to the desired precision*, and that is
-    a hard problem in its own right! Without multi-threading that item, most of our time
+    a hard problem in its own right! Without multi-threading that item, a lot of our time
     gets spent dealing with it, and... argh. I've built an improved sqrt() though, using
     old-timey Heron's Method, takes about 1/3 java's version.
 */
@@ -55,8 +55,7 @@ public class Driver2 {
                     computeLeaf(node.low, node.high), node.isLeft
                 );
                 node.nullify();
-            }
-            else if (node.hasTriples()) {
+            } else if (node.hasTriples()) {
                 final Triple tr = computeNode(node.leftTriple, node.rightTriple);
                 node.leftTriple = node.rightTriple = null; // GC easier
                 if (node.parent==null) {
@@ -145,38 +144,6 @@ public class Driver2 {
         return guess;
     }
 
-    private BigDecimal computeFinal(
-            Triple triple, BigDecimal sqrt10005, int precision
-        ) {
-        /** Original
-            (426880 * Q1n * sqrt(10005)) / (13591409 * Q1n + R1n)
-        **/
-        System.out.println("Final run proceeding...");
-        final MathContext m = new MathContext(precision);
-        final BigInteger qi = triple.q;
-        final BigInteger ri = triple.r;
-        triple.p = triple.q = triple.r = null; // Dumb, but, memory!
-        System.out.print("Upper/Lower... ");
-        final Future<BigDecimal>
-            fupper = execService.submit(()->
-                new BigDecimal(
-                        big(426880).multiply(qi), m
-                    ).multiply(sqrt10005)
-            ),
-            flower = execService.submit(()->
-                new BigDecimal(
-                    big(13591409).multiply(qi).add(ri), m
-                )
-            );
-        try {
-            final BigDecimal upper = fupper.get(), lower = flower.get();
-            System.out.println("Here comes... ");
-            return upper.divide(lower, precision, RoundingMode.HALF_UP);
-        } catch (Exception e) {
-            throw new RuntimeException("Failure at the very end: "+e, e);
-        }
-    }
-
     final static BigInteger
         big109 = big(10939058860032000L),
         big545 = big(545140134),
@@ -221,6 +188,39 @@ public class Driver2 {
             )
         );
     }
+
+    private BigDecimal computeFinal(
+            Triple triple, BigDecimal sqrt10005, int precision
+        ) {
+        /** Original
+            (426880 * Q1n * sqrt(10005)) / (13591409 * Q1n + R1n)
+        **/
+        System.out.println("Final run proceeding...");
+        final MathContext m = new MathContext(precision);
+        final BigInteger qi = triple.q;
+        final BigInteger ri = triple.r;
+        triple.p = triple.q = triple.r = null; // Dumb, but, memory!
+        System.out.print("Upper/Lower... ");
+        final Future<BigDecimal>
+            fupper = execService.submit(()->
+                new BigDecimal(
+                        big(426880).multiply(qi), m
+                    ).multiply(sqrt10005)
+            ),
+            flower = execService.submit(()->
+                new BigDecimal(
+                    big(13591409).multiply(qi).add(ri), m
+                )
+            );
+        try {
+            final BigDecimal upper = fupper.get(), lower = flower.get();
+            System.out.println("Here comes... ");
+            return upper.divide(lower, precision, RoundingMode.HALF_UP);
+        } catch (Exception e) {
+            throw new RuntimeException("Failure at the very end: "+e, e);
+        }
+    }
+
     private static BigInteger big(long x) {
         return BigInteger.valueOf(x);
     }
