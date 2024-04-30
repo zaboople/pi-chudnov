@@ -127,7 +127,7 @@ public class Main {
             int didRead = 1;
             while ((didRead = istr.read(strBytes, 0, strBytes.length))!=0) {
                 final int compareLen = Math.min(didRead, resultLen - resultPtr);
-                if (compareLen==0)
+                if (compareLen<=0)
                     break;
                 final String subOrig = new String(strBytes, StandardCharsets.UTF_8);
                 final String subResult = strResult.substring(resultPtr, resultPtr + compareLen);
