@@ -112,10 +112,11 @@ public class Driver2 {
     private static MathContext mc(int i) {
         return new MathContext(i, RoundingMode.FLOOR);
     }
+
     public BigDecimal computeSqrt(int number) throws Exception {
         // Heron's iterative method:
         //     N.next = (N + (squared / N)) / 2
-        final BigDecimal diffAllowed = BigDecimal.valueOf(1, precision);
+        final BigDecimal diffAllowed = BigDecimal.valueOf(1, precision-1);
         final BigDecimal two = new BigDecimal(2, mc(0));
         final BigDecimal squared = new BigDecimal(number, mc(0));
         int prec = 16;
