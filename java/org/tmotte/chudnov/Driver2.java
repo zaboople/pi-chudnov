@@ -32,10 +32,10 @@ public class Driver2 {
     }
 
     public BigDecimal computePI(int depth, int coreCount) throws Exception {
-        Future<BigDecimal> sqrt10005 = execService.submit(
+        final Future<BigDecimal> sqrt10005 = execService.submit(
             ()-> computeSqrt(10005)
         );
-        Triple tr = compute(TreeNode.makeRoot(1, depth), coreCount);
+        final Triple tr = compute(TreeNode.makeRoot(1, depth), coreCount);
         System.out.println("Is square root ready yet... ?");
         BigDecimal pi = computeFinal(tr, sqrt10005.get(), precision);
         System.out.println("ALL DONE");
@@ -57,7 +57,6 @@ public class Driver2 {
                 node.nullify();
             } else if (node.hasTriples()) {
                 final Triple tr = computeNode(node.leftTriple, node.rightTriple);
-                node.leftTriple = node.rightTriple = null; // GC easier
                 if (node.parent==null) {
                     node.nullify();
                     return tr; // EARLY RETURN
